@@ -10,6 +10,7 @@ import { auth } from "../services/firebase";
 import { useDispatch } from 'react-redux';
 import { addUser } from '../store/slices/userSlice';
 import { BG_URL, USER_AVATAR } from '../shared/constants';
+import { startLoading, stopLoading } from "../store/slices/uiSlice";
 
 const Login = () => {
   const [isSignInForm, setSignInForm] = useState(true);
@@ -19,52 +20,53 @@ const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
-  const handleAction = () => {
+  const handleAction = async () => {
     const errorMessage = checkValidData(email.current.value, password.current.value);
     setErrorMessage(errorMessage);
     if (errorMessage) return;
 
-    if (!isSignInForm) {
-      createUserWithEmailAndPassword(
-        auth,
-        email.current.value,
-        password.current.value
-      )
-        .then((userCredential) => {
-          const user = userCredential.user;
-          updateProfile(user, {
-            displayName: name.current.value,
-            photoURL: USER_AVATAR,
+    dispatch(startLoading());
+    try {
+      if (!isSignInForm) {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        );
+        const user = userCredential.user;
+
+        await updateProfile(user, {
+          displayName: name.current.value,
+          photoURL: USER_AVATAR,
+        });
+
+        const {
+          uid,
+          email: currentEmail,
+          displayName,
+          photoURL,
+        } = auth.currentUser;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: currentEmail,
+            displayName: displayName,
+            photoURL: photoURL,
           })
-            .then(() => {
-              const { uid, email, displayName, photoURL } = auth.currentUser;
-              dispatch(
-                addUser({
-                  uid: uid,
-                  email: email,
-                  displayName: displayName,
-                  photoURL: photoURL,
-                })
-              );
-            })
-            .catch((error) => {
-              setErrorMessage(error.message);
-            });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setErrorMessage(errorCode + "-" + errorMessage);
-        });
-    } else {
-      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-        .then((userCredential) => {
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setErrorMessage(errorCode + "-" + errorMessage);
-        });
+        );
+      } else {
+        await signInWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        );
+      }
+    } catch (error) {
+      const errorCode = error.code ?? "auth/error";
+      const message = error.message ?? "Something went wrong";
+      setErrorMessage(errorCode + "-" + message);
+    } finally {
+      dispatch(stopLoading());
     }
 
   }

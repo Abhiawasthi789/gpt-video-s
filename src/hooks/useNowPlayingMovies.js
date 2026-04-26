@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { API_OPTIONS } from "../shared/constants";
 import { addNowPlayingMovies } from "../store/slices/moviesSlice";
+import { startLoading, stopLoading } from "../store/slices/uiSlice";
 
 const useNowPlayingMovies = () => {
   const dispatch = useDispatch();
@@ -11,12 +12,17 @@ const useNowPlayingMovies = () => {
   );
 
   const getNowPlayingMovies = async () => {
-    const data = await fetch(
-      "https://api.themoviedb.org/3/movie/now_playing?page=1",
-      API_OPTIONS
-    );
-    const json = await data.json();
-    dispatch(addNowPlayingMovies(json.results));
+    dispatch(startLoading());
+    try {
+      const data = await fetch(
+        "https://api.themoviedb.org/3/movie/now_playing?page=1",
+        API_OPTIONS
+      );
+      const json = await data.json();
+      dispatch(addNowPlayingMovies(json.results));
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   useEffect(() => {
