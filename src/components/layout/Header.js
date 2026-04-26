@@ -2,12 +2,15 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LOGO, SUPPORTED_LANGUAGES } from "../shared/constants";
-import { auth } from "../services/firebase";
-import { addUser, removeUser } from "../store/slices/userSlice";
-import { toggleGptSearchView, resetGptMovieResuts } from "../store/slices/gptSlice";
-import { changeLanguage } from "../store/slices/configSlice";
-import { startLoading, stopLoading } from "../store/slices/uiSlice";
+import { LOGO, SUPPORTED_LANGUAGES } from "../../shared/constants";
+import { auth } from "../../services/firebase";
+import { addUser, removeUser } from "../../store/slices/userSlice";
+import {
+  toggleGptSearchView,
+  resetGptMovieResuts,
+} from "../../store/slices/gptSlice";
+import { changeLanguage } from "../../store/slices/configSlice";
+import { startLoading, stopLoading } from "../../store/slices/uiSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -17,6 +20,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useSelector((store) => store.user);
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+
   const handleSignOut = async () => {
     dispatch(startLoading());
     try {
@@ -117,7 +121,9 @@ const Header = () => {
                 <p className="truncate text-sm font-semibold text-white">
                   {user?.displayName || "Netflix User"}
                 </p>
-                <p className="truncate pt-1 text-xs text-zinc-400">{user?.email}</p>
+                <p className="truncate pt-1 text-xs text-zinc-400">
+                  {user?.email}
+                </p>
                 <button
                   onClick={handleSignOut}
                   className="mt-3 w-full rounded bg-red-700 px-3 py-2 text-sm font-semibold text-white hover:bg-red-800"
@@ -133,3 +139,4 @@ const Header = () => {
   );
 };
 export default Header;
+

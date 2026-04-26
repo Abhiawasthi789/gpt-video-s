@@ -1,4 +1,4 @@
-import { IMG_CDN_URL } from "../shared/constants";
+import { IMG_CDN_URL } from "../../shared/constants";
 import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({ posterPath, movieId, title }) => {
@@ -11,8 +11,13 @@ const MovieCard = ({ posterPath, movieId, title }) => {
       onClick={() => navigate(`/browse/movie/${movieId}`)}
       aria-label={`View details for ${title || "movie"}`}
     >
-      <img className="block w-full" alt={title || "Movie Card"} src={IMG_CDN_URL + posterPath} />
+      <img
+        className="block w-full"
+        alt={title || "Movie Card"}
+        src={IMG_CDN_URL + posterPath}
+      />
     </button>
   );
 };
 export default MovieCard;
+

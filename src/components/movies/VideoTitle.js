@@ -22,3 +22,4 @@ const VideoTitle = ({ title, overview, movieId }) => {
   );
 };
 export default VideoTitle;
+

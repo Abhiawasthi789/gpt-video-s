@@ -1,16 +1,16 @@
-import React, { useRef, useState } from 'react'
-import Header from './Header'
-import { checkValidData } from '../shared/validate';
+import React, { useRef, useState } from "react";
+import Header from "../layout/Header";
+import { checkValidData } from "../../shared/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../services/firebase";
-import { useDispatch } from 'react-redux';
-import { addUser } from '../store/slices/userSlice';
-import { BG_URL, USER_AVATAR } from '../shared/constants';
-import { startLoading, stopLoading } from "../store/slices/uiSlice";
+import { auth } from "../../services/firebase";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../store/slices/userSlice";
+import { BG_URL, USER_AVATAR } from "../../shared/constants";
+import { startLoading, stopLoading } from "../../store/slices/uiSlice";
 
 const Login = () => {
   const [isSignInForm, setSignInForm] = useState(true);
@@ -20,8 +20,12 @@ const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
+
   const handleAction = async () => {
-    const errorMessage = checkValidData(email.current.value, password.current.value);
+    const errorMessage = checkValidData(
+      email.current.value,
+      password.current.value
+    );
     setErrorMessage(errorMessage);
     if (errorMessage) return;
 
@@ -40,12 +44,8 @@ const Login = () => {
           photoURL: USER_AVATAR,
         });
 
-        const {
-          uid,
-          email: currentEmail,
-          displayName,
-          photoURL,
-        } = auth.currentUser;
+        const { uid, email: currentEmail, displayName, photoURL } =
+          auth.currentUser;
         dispatch(
           addUser({
             uid: uid,
@@ -68,26 +68,21 @@ const Login = () => {
     } finally {
       dispatch(stopLoading());
     }
+  };
 
-  }
   const toggleSign = () => {
     setSignInForm(!isSignInForm);
-  }
+  };
+
   return (
     <div className="relative min-h-screen">
       <Header />
 
-      {/* Background */}
       <div className="fixed inset-0 -z-10">
-        <img
-          src={BG_URL}
-          alt="bg"
-          className="w-full h-full object-cover"
-        />
+        <img src={BG_URL} alt="bg" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/60"></div>
       </div>
 
-      {/* Form Container */}
       <div className="flex justify-center items-center min-h-screen px-4">
         <form
           onSubmit={(e) => e.preventDefault()}
@@ -129,18 +124,14 @@ const Login = () => {
             Sign {isSignInForm ? "In" : "Up"}
           </button>
 
-          <p
-            className="text-sm cursor-pointer mt-2"
-            onClick={toggleSign}
-          >
-            {isSignInForm
-              ? "New here? Sign Up"
-              : "Already registered? Sign In"}
+          <p className="text-sm cursor-pointer mt-2" onClick={toggleSign}>
+            {isSignInForm ? "New here? Sign Up" : "Already registered? Sign In"}
           </p>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Login;
+

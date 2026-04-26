@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Header from "./Header";
+import Header from "../layout/Header";
 import MovieList from "./MovieList";
-import useMovieDetails from "../hooks/useMovieDetails";
-import { IMG_CDN_URL } from "../shared/constants";
+import useMovieDetails from "../../hooks/useMovieDetails";
+import { IMG_CDN_URL } from "../../shared/constants";
 
 const formatRuntime = (runtime) => {
   if (!runtime) return "N/A";
@@ -37,9 +37,7 @@ const MovieDetails = () => {
     .map((member) => member.name)
     .join(", ");
   const writers = crew
-    .filter((member) =>
-      ["Writer", "Screenplay", "Story"].includes(member.job)
-    )
+    .filter((member) => ["Writer", "Screenplay", "Story"].includes(member.job))
     .slice(0, 5)
     .map((member) => member.name)
     .join(", ");
@@ -168,8 +166,9 @@ const MovieDetails = () => {
           </p>
           <p className="text-sm text-zinc-300">
             <span className="font-medium text-white">Available on: </span>
-            {watchProviders?.flatrate?.map((provider) => provider.provider_name).join(", ") ||
-              "Provider info unavailable"}
+            {watchProviders?.flatrate
+              ?.map((provider) => provider.provider_name)
+              .join(", ") || "Provider info unavailable"}
           </p>
         </div>
       </div>
@@ -179,7 +178,10 @@ const MovieDetails = () => {
           <h3 className="mb-4 text-xl font-semibold">Top Cast</h3>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
             {cast.map((member) => (
-              <div key={member.cast_id || member.id} className="rounded bg-zinc-900 p-3">
+              <div
+                key={member.cast_id || member.id}
+                className="rounded bg-zinc-900 p-3"
+              >
                 <p className="text-sm font-semibold">{member.name}</p>
                 <p className="mt-1 text-xs text-zinc-400">{member.character}</p>
               </div>
@@ -201,3 +203,4 @@ const MovieDetails = () => {
 };
 
 export default MovieDetails;
+

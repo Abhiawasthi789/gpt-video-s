@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
-import Body from './components/Body';
-import GlobalLoader from './components/GlobalLoader';
+import Body from './components/layout/Body';
+import GlobalLoader from './components/common/GlobalLoader';
 import appStore from './store';
 
 function App() {
