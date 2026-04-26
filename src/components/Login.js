@@ -72,22 +72,71 @@ const Login = () => {
     setSignInForm(!isSignInForm);
   }
   return (
-    <div>
+    <div className="relative min-h-screen">
       <Header />
-      <div className='absolute'>
-        <img src={BG_URL} alt='logo' />
+
+      {/* Background */}
+      <div className="fixed inset-0 -z-10">
+        <img
+          src={BG_URL}
+          alt="bg"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/60"></div>
       </div>
-      <form onSubmit={(e) => e.preventDefault()} className='w-3/12 absolute p-12 bg-black my-36 mx-auto left-0 right-0 text-white rounded-lg bg-opacity-80'>
-        <h1 className='font-bold text-3xl py-4'>Sign {isSignInForm ? 'In' : 'Up'}</h1>
-        {!isSignInForm && <input ref={name} type='text' placeholder='Full Name' className='p-4 my-4 w-full bg-gray-700' />}
-        <input ref={email} type='text' placeholder='Email Address' className='p-4 my-4 w-full bg-gray-700' />
-        <input ref={password} type='password' placeholder='Password' className='p-4 my-4 w-full bg-gray-700' />
-        <p className='text-red-500 font-bold text-lg py-2'>{errorMessage && errorMessage}</p>
 
-        <button onClick={handleAction} className='p-4 my-6 bg-red-700 w-full rounded-lg'> Sign {isSignInForm ? 'In' : 'Up'}</button>
+      {/* Form Container */}
+      <div className="flex justify-center items-center min-h-screen px-4">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="w-full max-w-md bg-black/80 p-6 md:p-10 rounded-lg text-white"
+        >
+          <h1 className="font-bold text-2xl md:text-3xl py-4">
+            Sign {isSignInForm ? "In" : "Up"}
+          </h1>
 
-        <p className='py-4 cursor-pointer' onClick={toggleSign}>{isSignInForm ? 'Are you new Here? Sign Up Now' : 'Already registered? Sign In'}</p>
-      </form>
+          {!isSignInForm && (
+            <input
+              ref={name}
+              type="text"
+              placeholder="Full Name"
+              className="p-3 my-2 w-full bg-gray-700 rounded"
+            />
+          )}
+
+          <input
+            ref={email}
+            type="text"
+            placeholder="Email Address"
+            className="p-3 my-2 w-full bg-gray-700 rounded"
+          />
+
+          <input
+            ref={password}
+            type="password"
+            placeholder="Password"
+            className="p-3 my-2 w-full bg-gray-700 rounded"
+          />
+
+          <p className="text-red-500 text-sm py-2">{errorMessage}</p>
+
+          <button
+            onClick={handleAction}
+            className="p-3 my-4 bg-red-700 w-full rounded-lg hover:bg-red-800 transition"
+          >
+            Sign {isSignInForm ? "In" : "Up"}
+          </button>
+
+          <p
+            className="text-sm cursor-pointer mt-2"
+            onClick={toggleSign}
+          >
+            {isSignInForm
+              ? "New here? Sign Up"
+              : "Already registered? Sign In"}
+          </p>
+        </form>
+      </div>
     </div>
   )
 }
