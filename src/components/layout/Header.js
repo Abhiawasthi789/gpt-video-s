@@ -1,10 +1,9 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LOGO, SUPPORTED_LANGUAGES } from "../../shared/constants";
 import { auth } from "../../services/firebase";
-import { addUser, removeUser } from "../../store/slices/userSlice";
 import {
   toggleGptSearchView,
   resetGptMovieResuts,
@@ -15,7 +14,6 @@ import { startLoading, stopLoading } from "../../store/slices/uiSlice";
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const menuRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useSelector((store) => store.user);
@@ -31,31 +29,6 @@ const Header = () => {
       dispatch(stopLoading());
     }
   };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const { uid, email, displayName, photoURL } = user;
-        dispatch(
-          addUser({
-            uid: uid,
-            email: email,
-            displayName: displayName,
-            photoURL: photoURL,
-          })
-        );
-        // Only force redirect from auth page; keep current protected route.
-        if (location.pathname === "/") {
-          navigate("/browse");
-        }
-      } else {
-        dispatch(removeUser());
-        navigate("/");
-      }
-    });
-
-    return () => unsubscribe();
-  }, [dispatch, navigate, location.pathname]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
