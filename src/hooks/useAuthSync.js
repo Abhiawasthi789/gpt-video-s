@@ -9,14 +9,21 @@ export function useAuthSync() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const { uid, email, displayName, photoURL } = user;
-        dispatch(addUser({ uid, email, displayName, photoURL }));
-      } else {
-        dispatch(removeUser());
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      try {
+        if (user) {
+          // Ensure we read the freshest profile values (displayName/photoURL)
+          // especially right after sign-up + updateProfile.
+          await user.reload();
+          const currentUser = auth.currentUser ?? user;
+          const { uid, email, displayName, photoURL } = currentUser;
+          dispatch(addUser({ uid, email, displayName, photoURL }));
+        } else {
+          dispatch(removeUser());
+        }
+      } finally {
+        dispatch(setAuthChecked(true));
       }
-      dispatch(setAuthChecked(true));
     });
 
     return () => unsubscribe();
